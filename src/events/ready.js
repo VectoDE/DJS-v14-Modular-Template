@@ -1,35 +1,23 @@
-const { Client, ActivityType } = require('discord.js');
-const mongoose = require('mongoose');
-const mongodbURL = process.env.MONGODBURL;
+const connectToDatabase = require('../database/connect');
 
 module.exports = {
     name: 'ready',
     once: true,
     async execute(client) {
-        console.log(`Bot: ${client.user.username} is online!`);
+        console.log(`Logged in as ${client.user.tag}`);
 
-        if (!mongodbURL) return;
-
-        await mongoose.connect(mongodbURL || "", {})
-
-        if (mongoose.connect) {
-            console.log("Bot: MongoDB Connected!")
-        }
-
-        //YouTube Notification
-        setInterval(client.youtubeCheck, 7000);
+        await connectToDatabase();
 
         const activity = [
-            { name: `${client.guilds.cache.size} server's`, type: ActivityType.Listening, status: 'online' },
-            { name: `LIVE on TWITCH`, type: ActivityType.Streaming, url: 'https://www.twitch.tv/vectode' },
-            { name: 'development', type: ActivityType.Competing, status: 'idle' },
-            { name: 'Vecto. Community', type: ActivityType.Watching, status: 'dnd' }
+            'DJS-v14',
+            'Modular Template',
+            'Multi Guild'
         ]
 
         setInterval(() => {
             const botStatus = activity[Math.floor(Math.random() * activity.length)];
-            client.user.setPresence({ activities: [{ name: `${botStatus.name}`, type: botStatus.type, url: botStatus.url }], status: botStatus.status });
-        }, 5000)
+            client.user.setPresence({ activities: [{ name: `${botStatus}` }]});
+        }, 3000)
 
         async function pickPresence () {
             const option = Math.floor(Math.random() * statusArray.length);
